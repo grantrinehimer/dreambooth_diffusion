@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Mac Files
+.DS_Store
+
+# Pretrained Models (too large to upload to GitHub)
+pretrained_models/
