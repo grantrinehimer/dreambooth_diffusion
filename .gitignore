@@ -178,3 +178,6 @@ cython_debug/
 
 # Pretrained Models (too large to upload to GitHub)
 pretrained_models/
+
+# Results
+results/
