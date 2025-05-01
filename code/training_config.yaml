@@ -1,0 +1,79 @@
+# === Required / Custom Set Arguments ===
+pretrained_model_name_or_path: /Users/grantrinehimer/Documents/cornell/sp25/cs5782/dreambooth_diffusion/pretrained_models/stable-diffusion-v1-5
+resolution: 512
+num_train_epochs: 1
+max_train_steps: 1
+learning_rate: 5e-6
+lr_scheduler: constant
+lr_warmup_steps: 0
+gradient_accumulation_steps: 1
+train_batch_size: 1
+
+# These are passed in per subject during batching
+
+# === Prior Preservation ===
+with_prior_preservation: false
+prior_loss_weight: 1.0
+class_data_dir: null
+class_prompt: null
+num_class_images: 100
+prior_generation_precision: null
+
+# === Optimizer Settings ===
+adam_beta1: 0.9
+adam_beta2: 0.999
+adam_weight_decay: 0.01
+adam_epsilon: 1.0e-08
+max_grad_norm: 1.0
+use_8bit_adam: false
+scale_lr: false
+
+# === Training Behavior ===
+train_text_encoder: false
+gradient_checkpointing: false
+set_grads_to_none: false
+mixed_precision: null
+
+# === Checkpointing ===
+checkpointing_steps: 500
+checkpoints_total_limit: null
+resume_from_checkpoint: null
+
+# === Validation ===
+validation_prompt: null
+num_validation_images: 4
+validation_steps: 100
+validation_images: null
+validation_scheduler: "DPMSolverMultistepScheduler"
+
+# === Logging ===
+logging_dir: logs
+report_to: tensorboard
+seed: null
+
+# === Data Loading ===
+center_crop: false
+dataloader_num_workers: 0
+sample_batch_size: 4
+
+# === HuggingFace Hub ===
+push_to_hub: false
+hub_token: null
+hub_model_id: null
+
+# === Advanced Performance ===
+allow_tf32: false
+enable_xformers_memory_efficient_attention: false
+offset_noise: false
+snr_gamma: null
+pre_compute_text_embeddings: false
+text_encoder_use_attention_mask: false
+skip_save_text_encoder: false
+
+# === Tokenization / Compatibility ===
+tokenizer_name: null
+tokenizer_max_length: null
+revision: null
+variant: null
+local_rank: -1
+class_labels_conditioning: null

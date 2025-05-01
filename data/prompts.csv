@@ -1,0 +1,51 @@
+,prompt,live
+0,a {0} {1} in the jungle,False
+1,a {0} {1} in the snow,False
+2,a {0} {1} on the beach,False
+3,a {0} {1} on a cobblestone street,False
+4,a {0} {1} on top of pink fabric,False
+5,a {0} {1} on top of a wooden floor,False
+6,a {0} {1} with a city in the background,False
+7,a {0} {1} with a mountain in the background,False
+8,a {0} {1} with a blue house in the background,False
+9,a {0} {1} on top of a purple rug in a forest,False
+10,a {0} {1} with a wheat field in the background,False
+11,a {0} {1} with a tree and autumn leaves in the background,False
+12,a {0} {1} with the Eiffel Tower in the background,False
+13,a {0} {1} floating on top of water,False
+14,a {0} {1} floating in an ocean of milk,False
+15,a {0} {1} on top of green grass with sunflowers around it,False
+16,a {0} {1} on top of a mirror,False
+17,a {0} {1} on top of the sidewalk in a crowded street,False
+18,a {0} {1} on top of a dirt road,False
+19,a {0} {1} on top of a white rug,False
+20,a red {0} {1},False
+21,a purple {0} {1},False
+22,a shiny {0} {1},False
+23,a wet {0} {1},False
+24,a cube shaped {0} {1},False
+25,a {0} {1} in the jungle,True
+26,a {0} {1} in the snow,True
+27,a {0} {1} on the beach,True
+28,a {0} {1} on a cobblestone street,True
+29,a {0} {1} on top of pink fabric,True
+30,a {0} {1} on top of a wooden floor,True
+31,a {0} {1} with a city in the background,True
+32,a {0} {1} with a mountain in the background,True
+33,a {0} {1} with a blue house in the background,True
+34,a {0} {1} on top of a purple rug in a forest,True
+35,a {0} {1} wearing a red hat,True
+36,a {0} {1} wearing a santa hat,True
+37,a {0} {1} wearing a rainbow scarf,True
+38,a {0} {1} wearing a black top hat and a monocle,True
+39,a {0} {1} in a chef outfit,True
+40,a {0} {1} in a firefighter outfit,True
+41,a {0} {1} in a police outfit,True
+42,a {0} {1} wearing pink glasses,True
+43,a {0} {1} wearing a yellow shirt,True
+44,a {0} {1} in a purple wizard outfit,True
+45,a red {0} {1},True
+46,a purple {0} {1},True
+47,a shiny {0} {1},True
+48,a wet {0} {1},True
+49,a cube shaped {0} {1},True

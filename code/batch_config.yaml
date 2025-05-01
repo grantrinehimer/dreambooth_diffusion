@@ -1,0 +1,8 @@
+
+data_dir: /Users/grantrinehimer/Documents/cornell/sp25/cs5782/dreambooth_diffusion/data/subjects
+csv_dir: /Users/grantrinehimer/Documents/cornell/sp25/cs5782/dreambooth_diffusion/data
+models_output_dir: /Users/grantrinehimer/Documents/cornell/sp25/cs5782/dreambooth_diffusion/models
+images_output_dir: /Users/grantrinehimer/Documents/cornell/sp25/cs5782/dreambooth_diffusion/results/no_ppl
+
+training_prompt: a photo of a {0} {1}
+rare_token: sks
