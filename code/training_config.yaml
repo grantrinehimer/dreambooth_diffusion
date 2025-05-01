@@ -1,8 +1,8 @@
 # === Required / Custom Set Arguments ===
-pretrained_model_name_or_path: /Users/grantrinehimer/Documents/cornell/sp25/cs5782/dreambooth_diffusion/pretrained_models/stable-diffusion-v1-5
+pretrained_model_name_or_path: /home/gwr47/deeplearning/dreambooth_diffusion/pretrained_models/stable-diffusion-v1-5
 resolution: 512
 num_train_epochs: 1
-max_train_steps: 1
+max_train_steps: 400
 learning_rate: 5e-6
 lr_scheduler: constant
 lr_warmup_steps: 0
@@ -25,14 +25,14 @@ adam_beta2: 0.999
 adam_weight_decay: 0.01
 adam_epsilon: 1.0e-08
 max_grad_norm: 1.0
-use_8bit_adam: false
+use_8bit_adam: true
 scale_lr: false
 
 # === Training Behavior ===
 train_text_encoder: false
-gradient_checkpointing: false
+# gradient_checkpointing: false
 set_grads_to_none: false
-mixed_precision: null
+mixed_precision: fp16
 
 # === Checkpointing ===
 checkpointing_steps: 500

@@ -180,5 +180,5 @@ cython_debug/
 pretrained_models/
 models/
 
-# Results
-results/
+
+*.yaml

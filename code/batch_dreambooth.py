@@ -72,6 +72,7 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
             instance_data_dir=str(subject_folder),
             instance_prompt=instance_prompt,
             output_dir=str(model_out),
+            gradient_checkpointing=True,
             **training_config,
         )
         input_args = to_cli_args(config_dict)
@@ -90,7 +91,8 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
             prompts=prompts,
             subject_class=image_class,
             rare_token=batch_config["rare_token"],
-            images_out_root=Path(batch_config['images_output_dir'])
+            images_out_root=Path(batch_config['images_output_dir']),
+            num_images_per_prompt=2
         )
 
 
@@ -151,6 +153,7 @@ def produce_demo_images(
                 guidance_scale=guidance_scale,
             ).images[0]
 
+
             fname = (
                 subject_out_dir
                 / f"{idx:03d}_{img_id}_{timestamp}.png"
@@ -170,7 +173,7 @@ def produce_demo_images(
 def to_cli_args(cfg):
     args = []
     for k, v in cfg.items():
-        key = f"--{k.replace('_', '-')}"
+        key = f"--{k}"
         if isinstance(v, bool):
             if v:
                 args.append(key)  # For action="store_true"
@@ -183,7 +186,7 @@ def to_cli_args(cfg):
 
 def main(argv: Sequence[str] | None = None):
     load_dotenv()
-    batch_train(Path(os.environ.get("BATCH_CONFIG")), Path(os.environ.get("TRAINING_CONFIG")))
+    batch_train(Path("batch_config.yaml"), Path("training_config.yaml"))
 
 
 if __name__ == "__main__":

@@ -196,6 +196,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--gradient_checkpointing",
         action="store_true",
+        default=True,
         help="Whether or not to use gradient checkpointing to save memory at the expense of slower backward pass.",
     )
     parser.add_argument(
@@ -230,7 +231,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--lr_power", type=float, default=1.0, help="Power factor of the polynomial scheduler.")
     parser.add_argument(
-        "--use_8bit_adam", action="store_true", help="Whether or not to use 8-bit Adam from bitsandbytes."
+        "--use_8bit_adam", action="store_true", help="Whether or not to use 8-bit Adam from bitsandbytes.",
+        default=True
     )
     parser.add_argument(
         "--dataloader_num_workers",
