@@ -24,13 +24,19 @@ def get_embedding(model, image_dir, device):
                     std=[0.229, 0.224, 0.225]),
     ])  # specific to the DINO pretrained model I'm using
     image = Image.open(image_dir).convert('RGB')
-    image = transform(image).unsqueeze(0).to(device)
+    x = transform(image).unsqueeze(0).to(device)
     with torch.no_grad():
-        features = model.forward_features(image)
-        if features.ndim == 4:
-            features = features.mean(dim=(2, 3))
-        features = features / features.norm(dim=1, keepdim=True)
-    return features.cpu()
+        if hasattr(model, 'forward_features'):
+            feats = model.forward_features(x)
+        else:
+            out = model(x)
+            feats = out[0] if isinstance(out, (tuple, list)) else out
+        if feats.ndim == 4:
+            feats = feats.mean(dim=(2, 3))
+        elif feats.ndim == 3:
+            feats = feats[:, 0, :]
+        feats = feats / feats.norm(dim=1, keepdim=True)
+    return feats.cpu()
 
 
 def calculate_pres(model, real_dir, gen_dir, device):
@@ -59,12 +65,16 @@ def collect_pres(real_dir, gen_dir, device=None):
     return pres
 
 
-parser = argparse.ArgumentParser(description='Compute PRES metric')
-parser.add_argument('--real_dir', type=str, required=True,
-                    help='Path to directory of real subject images')
-parser.add_argument('--gen_dir',  type=str, required=True,
-                    help='Path to directory of generated prior-class images')
-args = parser.parse_args()
+def main():
+    """
+    parser = argparse.ArgumentParser(description='Compute PRES metric')
+    parser.add_argument('--real_dir', type=str, required=True,
+                        help='Path to directory of real subject images')
+    parser.add_argument('--gen_dir',  type=str, required=True,
+                        help='Path to directory of generated prior-class images')
+    args = parser.parse_args()
 
-pres = collect_pres(args.real_dir, args.gen_dir)
-print(f'Prior Preservation Metric (PRES): {pres:.4f}')
+    pres = collect_pres(args.real_dir, args.gen_dir)
+    print(f'Prior Preservation Metric (PRES): {pres:.4f}')
+
+    """
