@@ -12,12 +12,12 @@ train_batch_size: 1
 # These are passed in per subject during batching
 
 # === Prior Preservation ===
-with_prior_preservation: false
+with_prior_preservation: true
 prior_loss_weight: 1.0
-class_data_dir: null
-class_prompt: null
+# class_data_dir: null
+# class_prompt: null
 num_class_images: 100
-prior_generation_precision: null
+prior_generation_precision: fp16
 
 # === Optimizer Settings ===
 adam_beta1: 0.9

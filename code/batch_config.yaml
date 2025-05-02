@@ -1,8 +1,11 @@
 
 data_dir: /home/gwr47/deeplearning/dreambooth_diffusion/data/subjects
 csv_dir: /home/gwr47/deeplearning/dreambooth_diffusion/data
-models_output_dir: /home/gwr47/deeplearning/dreambooth_diffusion/models
-images_output_dir: /home/gwr47/deeplearning/dreambooth_diffusion/results/no_ppl
+models_output_dir: /home/gwr47/deeplearning/dreambooth_diffusion/models/ppl
+images_output_dir: /home/gwr47/deeplearning/dreambooth_diffusion/results/ppl
+
+ppl_dir: /home/gwr47/deeplearning/dreambooth_diffusion/data/ppl
+
 
 training_prompt: a photo of a {0} {1}
 rare_token: sks

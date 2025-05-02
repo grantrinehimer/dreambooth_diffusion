@@ -52,7 +52,11 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
 
     data_dir = Path(batch_config['data_dir'])
 
-    for subject_folder in sorted(data_dir.iterdir()):
+    for index, subject_folder in enumerate(sorted(data_dir.iterdir())):
+
+        if index < 3:
+            continue
+
         if not subject_folder.is_dir():
             continue
 
@@ -67,6 +71,7 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
 
         instance_prompt = batch_config['training_prompt'].format(batch_config["rare_token"], image_class)
         print(instance_prompt)
+
         # 1) Prepare Namespace for DreamBooth
         config_dict = dict(
             instance_data_dir=str(subject_folder),
@@ -75,6 +80,17 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
             gradient_checkpointing=True,
             **training_config,
         )
+
+        if training_config['with_prior_preservation']:
+            ppl_base_dir = batch_config['ppl_dir']
+            class_data_dir = os.path.join(ppl_base_dir, image_class)
+            class_prompt = f"a {image_class}"
+            config_dict = dict(
+                class_data_dir = class_data_dir,
+                class_prompt = class_prompt,
+                **config_dict
+            )
+        
         input_args = to_cli_args(config_dict)
         args = arguments.parse_args(input_args=input_args)
 
@@ -84,7 +100,7 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
         gc.collect()
 
         # Get prompts based off if live
-        prompts = prompts_df.loc[prompts_df["live"] == is_live, "prompt"]
+        prompts = list(prompts_df.loc[prompts_df["live"] == is_live, "prompt"])
         # 2) Generate demo images
         produce_demo_images(
             model_dir=model_out,
@@ -92,7 +108,7 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
             subject_class=image_class,
             rare_token=batch_config["rare_token"],
             images_out_root=Path(batch_config['images_output_dir']),
-            num_images_per_prompt=2
+            num_images_per_prompt=4
         )
 
 
@@ -100,7 +116,7 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
 @torch.inference_mode()
 def produce_demo_images(
     model_dir: Path,
-    prompts: pd.Series,
+    prompts: List,
     subject_class: str,
     rare_token: str,
     images_out_root: Path,
@@ -118,7 +134,7 @@ def produce_demo_images(
     model_dir : Path
         Directory that contains the fine-tuned model weights (same as `output_dir`
         you passed to the trainer).
-    prompts : pd.Series
+    prompts : List
         A column of text prompts.  Every row will be rendered.
     images_out_root : Path
         Root directory where results are stored.  Images for this model are saved
@@ -139,27 +155,30 @@ def produce_demo_images(
 
     # 1. Load pipeline
     pipe = StableDiffusionPipeline.from_pretrained(model_dir).to(device)
+    finished_prompts = [prompt.format(rare_token, subject_class) for prompt in prompts]
+
+    
 
 
-    # 2. Sample images
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    for idx, prompt in prompts.items():
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") 
+
+    for idx, prompt in enumerate(finished_prompts):
+        images = pipe(
+            prompt,
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
+            num_images_per_prompt=num_images_per_prompt
+            ).images
         for img_id in range(num_images_per_prompt):
-            finished_prompt = prompt.format(rare_token, subject_class)
-            print(finished_prompt)
-            image = pipe(
-                finished_prompt,
-                num_inference_steps=num_inference_steps,
-                guidance_scale=guidance_scale,
-            ).images[0]
-
-
             fname = (
                 subject_out_dir
                 / f"{idx:03d}_{img_id}_{timestamp}.png"
             )
+            image = images[img_id]
             image.save(fname)
             print(f"   💾 Saved: {fname.relative_to(images_out_root)}")
+
     
     del pipe
     torch.cuda.empty_cache()
