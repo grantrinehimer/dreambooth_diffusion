@@ -21,34 +21,26 @@ def load_image_tensor(path, device):
     return x
 
 
-def compute_diversity(gen_dir, device=None, net='alex'):
+def compute_diversity(paths, device=None, net='alex'):
     if device is None:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
     device = torch.device(device)
 
     loss_fn = lpips.LPIPS(net=net).to(device).eval()
 
-    img_files = sorted([
-        os.path.join(gen_dir, f)
-        for f in os.listdir(gen_dir)
-        if os.path.isfile(os.path.join(gen_dir, f))
-    ])
-    imgs = [load_image_tensor(p, device) for p in img_files]
+    if len(paths) < 2:
+        raise ValueError(f"Need at least 2 images, got {len(paths)}")
 
-    n = len(imgs)
-    if n < 2:
-        raise ValueError(
-            f"Need ≥2 images to compute diversity; found {n} in {gen_dir}")
+    imgs = [load_image_tensor(p, device) for p in paths]
+
     total, count = 0.0, 0
-    for i in range(n):
-        for j in range(i+1, n):
-            with torch.no_grad():
-                d = loss_fn(imgs[i], imgs[j]).item()
-            total += d
-            count += 1
+    with torch.no_grad():
+        for i in range(len(imgs)):
+            for j in range(i+1, len(imgs)):
+                total += loss_fn(imgs[i], imgs[j]).item()
+                count += 1
 
-    div = total / count
-    return div
+    return total / count
 
 
 def collect_div(gen_dir, device=None, net='alex'):
