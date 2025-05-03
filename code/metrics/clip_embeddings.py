@@ -5,7 +5,7 @@ from PIL import Image
 from torchvision import transforms as T
 from typing import List
 from transformers import CLIPProcessor, CLIPModel
-import json
+import pandas as pd
 
 
 def load_clip(device: torch.device):
@@ -38,44 +38,31 @@ def avg_pairwise_cos(A: List[torch.Tensor], B: List[torch.Tensor]) -> float:
     return (A @ B.T).mean().item()
 
 
-def collect_clip_metrics(real_dir, gen_dir, prompts_json):
+def collect_clip_metrics(real_dir, gen_dir, prompt_dir):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     clip, proc = load_clip(device)
 
     real_emb, gen_emb, txt_emb = [], [], []
 
     for file_name in sorted(os.listdir(real_dir)):
-        file_path = os.path.join(real_dir, file_name)
-        if os.path.isfile(file_path):
+        file_path_real = os.path.join(real_dir, file_name)
+        if os.path.isfile(file_path_real):
             real_emb.append(get_clip_img_embedding(
-                clip, proc, file_path, device))
+                clip, proc, file_path_real, device))
 
-    gen_files = sorted(
-        f for f in os.listdir(gen_dir)
-        if os.path.isfile(os.path.join(gen_dir, f))
-    )
-    for file_name in gen_files:
-        file_path = os.path.join(gen_dir, file_name)
-        gen_emb.append(get_clip_img_embedding(clip, proc, file_path, device))
+    for file_name in sorted(os.listdir(gen_dir)):
+        file_path_gen = os.path.join(gen_dir, file_name)
+        if os.path.isfile(file_path_gen):
+            gen_emb.append(get_clip_img_embedding(
+                clip, proc, file_path_gen, device))
 
-    with open(prompts_json) as f:
-        prm_json = json.load(f)
-
-    if isinstance(prm_json, list):
-        prompts = prm_json
-        prompts = [prm_json[file_name] for file_name in gen_files]
-
-    if len(prompts) != len(gen_emb):
-        raise ValueError("prompts_json length must match #generated images")
+    prompts = pd.read_csv(prompt_dir)
 
     for t in prompts:
         txt_emb.append(get_clip_text_embedding(clip, proc, t, device))
 
     clip_i = avg_pairwise_cos(real_emb, gen_emb)
     clip_t = avg_pairwise_cos(gen_emb, txt_emb)
-
-    print(f"CLIP-I (subject fidelity) : {clip_i:.4f}")
-    print(f"CLIP-T (prompt  fidelity) : {clip_t:.4f}")
 
     return clip_i, clip_t
 
