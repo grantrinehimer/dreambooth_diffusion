@@ -16,15 +16,84 @@ We extend Figure 12 and Table 3 from the original paper [1] to qualitatively com
 `code\training_config.yaml` - Contains parameters for training on a specific subject, includes all specific training parameters
 `data` - Contains images of subjects as well as randomly generated class images for use in PPL
 ## Re-implementation Details
+This repository contains code and evaluation scripts to reproduce the quantitative results of our DreamBooth reimplementation (Stable Diffusion v1.5) and compare them against the original DreamBooth (Imagen) metrics. The evaluation produces per-class and per-condition (no‐PPL vs. PPL) scores for PRES, DIV, DINO, CLIP-I, and CLIP-T, and outputs summary CSV tables and an averaged comparison.
+
+## 📁 Repository Structure
+
+```
+├── data/                     # Real reference images and metadata
+│   ├── subjects.csv          # subject_name,class,live flag
+|   └── ppl/                  # TODO GRANT EXPLAIN THIS
+│       └── <subject_name>/…
+|   └── subjects/             # real image folders (e.g. data/subjects/dog/00.jpg,...)
+│       └── <subject_name>/…
+│
+├── results/                  # Generated images by condition
+│   ├── no_ppl/               # baseline generations (no prior preservation)
+│   │   └── <subject_name>/…  
+│   └── ppl/                  # generations with Prior Preservation Loss
+│       └── <subject_name>/…
+│
+├── code/                     # Evaluation scripts
+|   ├── metrics/              # Metric scripts
+│   │   └── pres.py           # computes PRES metric (and DINO metric)!
+│   │   └── div.py            # computes DIV metric
+│   │   └──clip_embeddings.py # computes CLIP‑I and CLIP‑T
+│   └── evaluation.ipynb      # notebook to aggregate & export metrics
+
+
+│ TODO: ADD INFO ON DREAMBOOTH_FINETUNE FOLDER 
+
+├── requirements.txt          # Python dependencies
+└── README.md                 # this file
+```
 
 ## Reproduction Steps
 
+1. **Clone the repo**:
+
+   ```bash
+   git clone https://github.com/grantrinehimer/dreambooth_diffusion.git
+   cd <repo>
+   ```
+2. **Create a virtual environment** (Python 3.8+ recommended):
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+3. **Install dependencies**:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **FINETUNING** (TODO GRANT)
+
+5. **Execute all cells in code/evaluation.ipynb**:
+
+   * The notebook imports `pres.py`, `div.py`, and `clip_embeddings.py`.
+   * It iterates over each subject & condition, computes all five metrics, and writes per-metric CSVs:
+     * `pres_results.csv`
+     * `div_results.csv`
+     * `clip_results.csv`
+     * `dino_results.csv`
+   * The final cell **aggregates** these into a single summary table, saving `all_results.csv` that contains mean PRES, DIV, DINO, CLIP-I, CLIP-T for `non-ppl` and `ppl`.
+   * 
 ## Results/Insights
+
+Across all metrics, our reimplementation reproduces the original paper’s trends—with slightly lower absolute values owing to our reduced prompt set (8 vs. 25) and shorter fine-tuning (400 vs. 1000 steps). This is highlighted below [Table 1]; the same trends persist between the Dreambooth metrics [1] and ours. 
+
+In both cases, adding PPL sharply reduces prior collapse (lower PRES), meaning the model no longer “hallucinates” the fine-tuned subject when generating random class samples. We interpreted this as a lack of overfitting to the original subject; PPL aids in understanding the key components of what features make up the class without recreating the original subject, evident when prompts contain another subject from the same class.
+
+Moreover, PPL boosts sample diversity under both pipelines, as generated images vary more in pose, background, and articulation. Nevertheless, our significant difference in DIV scores in PPL and no-PPL of 0.245 and 0.207 respectively are indicative of our reduced amount of output images per prompt compared to the Dreambooth [1] output (2 vs. 4): having more output images mitigates average variance. When you only have two images, that one distance completely determines the mean; with four images, you average over six distances, which smooths out any outliers and reduces the overall DIV value.
+
+Importantly, even with only 2 outputs per prompt and 400 training steps, PPL maintained its benefits: relative reductions in PRES and gains in DIV closely match those reported by Ruiz et al. [1]. This robustness suggests that class-specific prior preservation can be deployed under constrained compute budgets without losing its ability to preserve subject identity and encourage diverse generations.
 
 ## Conclusion
 
 ## References
 1. Ruiz, N., Li, Y., Jampani, V., Pritch, Y., Rubinstein, M., & Aberman, K. (2023). *DreamBooth: Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation*. arXiv:2208.12242. [https://arxiv.org/abs/2208.12242](https://arxiv.org/abs/2208.12242)
 2. P. von Platen et al., Diffusers: State-of-the-art diffusion models. GitHub, 2022. [Online]. Available: https://github.com/huggingface/diffusers
+3. Mathilde Caron, Hugo Touvron, Ishan Misra, Herve ́ Je ́gou, Julien Mairal, Piotr Bojanowski, and Armand Joulin. Emerging properties in self-supervised vision transformers. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 9650–9660, 2021.
 
 ## Acknowledgements
