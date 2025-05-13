@@ -1,11 +1,15 @@
 
-data_dir: /home/gwr47/deeplearning/dreambooth_diffusion/data/subjects
-csv_dir: /home/gwr47/deeplearning/dreambooth_diffusion/data
-models_output_dir: /home/gwr47/deeplearning/dreambooth_diffusion/models/ppl
-images_output_dir: /home/gwr47/deeplearning/dreambooth_diffusion/results/ppl
+data_dir: ../data/subjects # Location of subject images in named directories (makes a model for each subject)
+csv_dir: ../data # Location of prompts and subject info csvs
+models_output_dir: ../models/ # Location to store fine-tuned models
+images_output_dir: ../results/no_ppl # Location to store generated images based on prompts
 
-ppl_dir: /home/gwr47/deeplearning/dreambooth_diffusion/data/ppl
+# Locations when running again on ppl
+# models_output_dir: ../models/ppl # Location to store fine-tuned models
+# images_output_dir: ../results/ppl # Location to store generated images based on prompts
+
+ppl_dir: ../data/ppl # Location to store images generated for PPL
 
 
-training_prompt: a photo of a {0} {1}
+training_prompt: a photo of a {0} {1} # {0} represents rare token and {1} represents class name as specified in subjects.csv
 rare_token: sks

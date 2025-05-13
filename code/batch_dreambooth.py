@@ -23,7 +23,6 @@ from diffusers import StableDiffusionPipeline
 import dreambooth_finetune.arguments as arguments  # provides `parse_args` with full DreamBooth defaults
 import dreambooth_finetune.trainer as trainer    # entry‑point for training
 
-from dotenv import load_dotenv
 import os
 import pandas as pd
 import yaml
@@ -77,7 +76,7 @@ def batch_train(batch_config_path: Path, training_config_path: Path):
             instance_data_dir=str(subject_folder),
             instance_prompt=instance_prompt,
             output_dir=str(model_out),
-            gradient_checkpointing=True,
+            # gradient_checkpointing=True,
             **training_config,
         )
 
@@ -204,7 +203,6 @@ def to_cli_args(cfg):
 
 
 def main(argv: Sequence[str] | None = None):
-    load_dotenv()
     batch_train(Path("batch_config.yaml"), Path("training_config.yaml"))
 
 

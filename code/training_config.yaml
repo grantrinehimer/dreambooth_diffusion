@@ -1,5 +1,5 @@
 # === Required / Custom Set Arguments ===
-pretrained_model_name_or_path: /home/gwr47/deeplearning/dreambooth_diffusion/pretrained_models/stable-diffusion-v1-5
+pretrained_model_name_or_path: ../pretrained_models/stable-diffusion-v1-5
 resolution: 512
 num_train_epochs: 1
 max_train_steps: 400
@@ -12,7 +12,7 @@ train_batch_size: 1
 # These are passed in per subject during batching
 
 # === Prior Preservation ===
-with_prior_preservation: true
+with_prior_preservation: false
 prior_loss_weight: 1.0
 # class_data_dir: null
 # class_prompt: null
@@ -30,7 +30,7 @@ scale_lr: false
 
 # === Training Behavior ===
 train_text_encoder: false
-# gradient_checkpointing: false
+gradient_checkpointing: true
 set_grads_to_none: false
 mixed_precision: fp16
 
