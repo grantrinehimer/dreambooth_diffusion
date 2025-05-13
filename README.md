@@ -12,7 +12,7 @@ We extend Figure 12 and Table 3 from the original paper [1] to qualitatively com
 
 <div style="text-align: center;">
   <img src="fig_12.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
-  <img src="table_3.png" alt="Results Table" style="display: inline-block; margin: 0 10px;" width="300" />
+  <img src="table_3.png" alt="Results Table" style="display: inline-block; margin: 0 10px;" width="500" />
 </div>
 ## GitHub Contents
 
