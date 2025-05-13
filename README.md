@@ -128,3 +128,6 @@ Now, for the successes and direct conclusions of our project. We were able to re
 3. Mathilde Caron, Hugo Touvron, Ishan Misra, Herve ́ Je ́gou, Julien Mairal, Piotr Bojanowski, and Armand Joulin. Emerging properties in self-supervised vision transformers. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 9650–9660, 2021.
 
 ## Acknowledgements
+- This project was completed as part of the coursework for **CS 4782: Introduction to Deep Learning** at **Cornell University**.
+- I would like to thank **Prof. Kilian Weinberger** and **Prof. Jennifer J. Sun** for their guidance throughout the semester.
+- Appreciation also goes to our classmates for their insights and feedback during the final project peer review sessions on **5/1/2025** and **5/6/2025**.
