@@ -56,20 +56,34 @@ This repository contains code and evaluation scripts to reproduce the quantitati
    git clone https://github.com/grantrinehimer/dreambooth_diffusion.git
    cd <repo>
    ```
-2. **Create a virtual environment** (Python 3.8+ recommended):
+2. **Create a conda environment** (Python 3.10 recommended):
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate
+   conda create -n myenv python=3.10
    ```
 3. **Install dependencies**:
 
    ```bash
    pip install -r requirements.txt
    ```
-4. **FINETUNING** (TODO GRANT)
+4. **Setup Accelerate Config**
 
-5. **Execute all cells in code/evaluation.ipynb**:
+   ```bash
+   accelerate config
+   ```
+   We recommend enabling fp16 mixed precision.
+
+5. **Use stable_diffusion_test.ipynb to download your base pretrained model.**
+
+   We use stable diffusion v1.5. Ensure that the model is located at the directory referred to in training_config.yaml.
+   
+6. **Run training script**
+   ```bash
+   accelerate launch batch_dreambooth.py
+   ```
+   This script will generate a model for every subject, so beware of disk space. It also runs inference on the fine-tuned models to generate the result images. In training_config.yaml, you can configure training parameters. We used gradient checkpointing, mixed precision FP16, and 8-bit Adam. You will also see an option to enable PPL and the number of images to generate for PPL. We used 100 images and created models both with and without PPL. Remember to change the model and images output directories in batch_config.yaml when generating PPL so as to not overwrite the models without PPL. We ran the script once with and without PPL for 400 training steps. We also used a batch size of 1.
+
+6. **Execute all cells in code/evaluation.ipynb**:
 
    * The notebook imports `pres.py`, `div.py`, and `clip_embeddings.py`.
    * It iterates over each subject & condition, computes all five metrics, and writes per-metric CSVs:
@@ -83,9 +97,9 @@ This repository contains code and evaluation scripts to reproduce the quantitati
 
 Across all metrics, our reimplementation reproduces the original paper’s trends—with slightly lower absolute values owing to our reduced prompt set (8 vs. 25) and shorter fine-tuning (400 vs. 1000 steps). This is highlighted below [Table 1]; the same trends persist between the Dreambooth metrics [1] and ours. 
 
-In both cases, adding PPL sharply reduces prior collapse (lower PRES), meaning the model no longer “hallucinates” the fine-tuned subject when generating random class samples. We interpreted this as a lack of overfitting to the original subject; PPL aids in understanding the key components of what features make up the class without recreating the original subject, evident when prompts contain another subject from the same class.
+In both cases, adding PPL sharply reduces prior collapse (lower PRES), meaning the model no longer “hallucinates” the fine-tuned subject when generating random class samples. We interpreted this as a lack of overfitting to the original subject; PPL aids in understanding the key components of what features make up the class without recreating the original subject, which is evident when prompts contain another subject from the same class.
 
-Moreover, PPL boosts sample diversity under both pipelines, as generated images vary more in pose, background, and articulation. Nevertheless, our significant difference in DIV scores in PPL and no-PPL of 0.245 and 0.207 respectively are indicative of our reduced amount of output images per prompt compared to the Dreambooth [1] output (2 vs. 4): having more output images mitigates average variance. When you only have two images, that one distance completely determines the mean; with four images, you average over six distances, which smooths out any outliers and reduces the overall DIV value.
+Moreover, PPL boosts sample diversity under both pipelines, as generated images vary more in pose, background, and articulation. Nevertheless, our significant difference in DIV scores in PPL and no-PPL of 0.245 and 0.207 respectively, are indicative of our reduced amount of output images per prompt compared to the Dreambooth [1] output (2 vs. 4): having more output images mitigates average variance. When you only have two images, that one distance completely determines the mean; with four images, you average over six distances, which smooths out any outliers and reduces the overall DIV value.
 
 Importantly, even with only 2 outputs per prompt and 400 training steps, PPL maintained its benefits: relative reductions in PRES and gains in DIV closely match those reported by Ruiz et al. [1]. This robustness suggests that class-specific prior preservation can be deployed under constrained compute budgets without losing its ability to preserve subject identity and encourage diverse generations.
 
