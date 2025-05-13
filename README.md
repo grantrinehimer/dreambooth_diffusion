@@ -74,25 +74,39 @@ We evaluated prior collapse through the PRES (preservation) metric, found by the
    ```
 3. **Install dependencies**:
 
+   First perform:
+   ```bash
+   git clone https://github.com/huggingface/diffusers
+   cd diffusers
+   pip install .
+   cd examples/dreambooth
+   pip install -r requirements.txt
+   ```
+   This will get the latest version of diffusers and most required packages.
+   
    ```bash
    pip install -r requirements.txt
    ```
-4. **Setup Accelerate Config**
+   Note that this may cause issues depending on version.
+
+5. **Setup Accelerate Config**
 
    ```bash
    accelerate config
    ```
    We recommend enabling fp16 mixed precision.
 
-5. **Use stable_diffusion_test.ipynb to download your base pretrained model.**
+6. **Use stable_diffusion_test.ipynb to download your base pretrained model.**
 
    We use stable diffusion v1.5. Ensure that the model is located at the directory referred to in training_config.yaml.
    
-6. **Run training script**
+7. **Run training script**
    ```bash
    accelerate launch batch_dreambooth.py
    ```
    This script will generate a model for every subject, so beware of disk space. It also runs inference on the fine-tuned models to generate the result images. In training_config.yaml, you can configure training parameters. We used gradient checkpointing, mixed precision FP16, and 8-bit Adam. You will also see an option to enable PPL and the number of images to generate for PPL. We used 100 images and created models both with and without PPL. Remember to change the model and images output directories in batch_config.yaml when generating PPL so as to not overwrite the models without PPL. We ran the script once with and without PPL for 400 training steps. We also used a batch size of 1.
+
+   Note that depending on the device, it can be difficult to configure CUDA. Running `accelerate config` to use the CPU instead resolves most issues.
 
 6. **Execute all cells in code/evaluation.ipynb**:
 
