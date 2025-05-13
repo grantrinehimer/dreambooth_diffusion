@@ -10,9 +10,10 @@ This GitHub repository contains our reimplementation of the DreamBooth architect
 ## Chosen Result
 We extend Figure 12 and Table 3 from the original paper [1] to qualitatively compare our reimplementation [Figure 1] and quantitatively assess the effect of PPL on subject fidelity and output diversity—key factors in evaluating the success of subject-driven generation. 
 
-<img src="fig_12.png" alt="DreamBooth Architecture" width="50%" />
-
-<img src="fig_12.png" alt="DreamBooth Architecture" width="75%" />
+<div style="text-align: center;">
+  <img src="fig_12.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
+  <img src="table_3.png" alt="Results Table" style="display: inline-block; margin: 0 10px;" width="300" />
+</div>
 ## GitHub Contents
 
 ```
