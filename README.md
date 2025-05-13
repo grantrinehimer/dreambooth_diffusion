@@ -135,7 +135,15 @@ Moreover, PPL boosts sample diversity under both pipelines, as generated images 
 
 Importantly, even with only 2 outputs per prompt and 400 training steps, PPL maintained its benefits: relative reductions in PRES and gains in DIV closely match those reported by Ruiz et al. [1]. This robustness suggests that class-specific prior preservation can be deployed under constrained compute budgets without losing its ability to preserve subject identity and encourage diverse generations.
 
+<img src="r1.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
 
+This series of images is a comparison of the paper's results compared to our model's generated images with the same prompts. Due to limitations in computational resoures and the utilization of Huggingface's Stable Diffusion instead of Google's Imagen (like the original paper), results vary slighlty and quality, but still demonstrate consistent, high-fidelity subject preservation. 
+
+<img src="r2.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
+Given the same few-shot fine tuning with the same dog subject, here is our model's generated images with  the prompt "A [V] dog in Van Gogh Style", "A [V] dog in Van Gogh Style", "A [V] dog in pop-art Style", "A [V] dog as a statue in a park"
+
+<img src="r3.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
+Although images of the previous dog demonstrated high quality subject preservation within mutiple contexts, the generated images above of "dog backpacks" do not produce high quality images as see in the prompt "A [V] dog bag pack in front of the eiffel tower." This is because the model's understanding "dog" has a stronger prior than "dog backpack" due to th4e quantity and diversity of the images the model was trained on in each class respectively.
 
 ## Conclusion
 
