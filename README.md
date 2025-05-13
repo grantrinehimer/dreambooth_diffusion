@@ -89,22 +89,22 @@ We evaluated prior collapse through the PRES (preservation) metric, found by the
    ```bash
    pip install -r requirements.txt
    ```
-   Note that this may cause issues depending on version.
+   Note that this may cause issues depending on the version.
 
 5. **Setup Accelerate Config**
 
    ```bash
    accelerate config
    ```
-   We recommend enabling fp16 mixed precision.
+   We recommend enabling FP16 mixed precision.
 
 6. **Use stable_diffusion_test.ipynb to download your base pretrained model.**
 
-   We use stable diffusion v1.5. Ensure that the model is located at the directory referred to in training_config.yaml.
+   We use Stable Diffusion v1.5. Ensure that the model is located at the directory referred to in training_config.yaml.
    
 7. **Run training script**
    ```bash
-   accelerate launch batch_dreambooth.py
+   Accelerate launch batch_dreambooth.py
    ```
    This script will generate a model for every subject, so beware of disk space. It also runs inference on the fine-tuned models to generate the result images. In training_config.yaml, you can configure training parameters. We used gradient checkpointing, mixed precision FP16, and 8-bit Adam. You will also see an option to enable PPL and the number of images to generate for PPL. We used 100 images and created models both with and without PPL. Remember to change the model and images output directories in batch_config.yaml when generating PPL so as to not overwrite the models without PPL. We ran the script once with and without PPL for 400 training steps. We also used a batch size of 1.
 
@@ -130,26 +130,26 @@ In both cases, adding PPL sharply reduces prior collapse (lower PRES), meaning t
 
 <img src="table_3.png" alt="Results Table" style="display: inline-block; margin: 0 10px;" width="500" />
 
-Moreover, PPL boosts sample diversity under both pipelines, as generated images vary more in pose, background, and articulation. Nevertheless, our significant difference in DIV scores in PPL and no-PPL of 0.245 and 0.207 respectively, are indicative of our reduced amount of output images per prompt compared to the Dreambooth [1] output (2 vs. 4): having more output images mitigates average variance. When you only have two images, that one distance completely determines the mean; with four images, you average over six distances, which smooths out any outliers and reduces the overall DIV value.
+Moreover, PPL boosts sample diversity under both pipelines, as generated images vary more in pose, background, and articulation. Nevertheless, our significant difference in DIV scores in PPL and no-PPL of 0.245 and 0.207, respectively, is indicative of our reduced amount of output images per prompt compared to the Dreambooth [1] output (2 vs. 4): having more output images mitigates average variance. When you only have two images, that one distance completely determines the mean; with four images, you average over six distances, which smooths out any outliers and reduces the overall DIV value.
 
 
 Importantly, even with only 2 outputs per prompt and 400 training steps, PPL maintained its benefits: relative reductions in PRES and gains in DIV closely match those reported by Ruiz et al. [1]. This robustness suggests that class-specific prior preservation can be deployed under constrained compute budgets without losing its ability to preserve subject identity and encourage diverse generations.
 
 <img src="r1.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="600" />
 
-This series of images is a comparison of the paper's results compared to our model's generated images with the same prompts. Due to limitations in computational resoures and the utilization of Huggingface's Stable Diffusion instead of Google's Imagen (like the original paper), results vary slighlty and quality, but still demonstrate consistent, high-fidelity subject preservation. 
+This series of images is a comparison of the paper's results compared to our model's generated images with the same prompts. Due to limitations in computational resources and the utilization of Huggingface's Stable Diffusion instead of Google's Imagen (like the original paper), results vary slightly and quality, but still demonstrate consistent, high-fidelity subject preservation. 
 
 <img src="r2.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
 Given the same few-shot fine tuning with the same dog subject, here is our model's generated images with  the prompt "A [V] dog in Van Gogh Style", "A [V] dog in Van Gogh Style", "A [V] dog in pop-art Style", "A [V] dog as a statue in a park"
 
 <img src="r3.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
-Although images of the previous dog demonstrated high quality subject preservation within mutiple contexts, the generated images above of "dog backpacks" do not produce high quality images as see in the prompt "A [V] dog bag pack in front of the eiffel tower." This is because the model's understanding "dog" has a stronger prior than "dog backpack" due to th4e quantity and diversity of the images the model was trained on in each class respectively.
+Although images of the previous dog demonstrated high-quality subject preservation within multiple contexts, the generated images above of "dog backpacks" do not produce high-quality images as seen in the prompt "A [V] dog bag pack in front of the Eiffel Tower." This is because the model's understanding of "dog" is stronger than that of "dog backpack" due to the quantity and diversity of the images the model was trained on in each class.
 
 ## Conclusion
 
-Fine-tuning the diffusion model with and without PPL was an excellent learning opportunity for our group. However, it is worth noting the challenges that were faced in our project. First, dealing with heavy computation can make it challenging to obtain quality, large-scale results. Just on reproducing a small subset of results from the paper, we consumed our available compute credits. Second, a related issue was that setting up our virtual machine correctly, actually using their available GPU in our code, and debugging/making adaptations to avoid out-of-memory errors during training was more than half the challenge. Unexpected considerations, such as using 8-bit Adam as a specific optimizer, were encountered during these steps. Lastly, fine-tuning can cause some seemingly magical things to happen to the subject and/or background prompt-by-prompt. It’s challenging to understand why these weird things happen, let alone fine-tune correctly. This resulted in trial and error making up a large portion of our work. 
+Fine-tuning the diffusion model with and without PPL was an excellent learning opportunity for our group. However, it is worth noting the challenges that were faced in our project. First, dealing with heavy computation can make it challenging to obtain quality, large-scale results. Second, a related issue was that setting up our virtual machine correctly, actually using their available GPU in our code, and debugging/making adaptations to avoid out-of-memory errors during training was more than half the challenge. Lastly, fine-tuning can cause some seemingly magical things to happen to the subject and/or background prompt-by-prompt. This resulted in trial and error making up a large portion of our work. 
 
-Now, for the successes and direct conclusions of our project. We were able to reproduce the wide variety of metrics presented in the original paper, as well as the effects that using PPL had on model performance. We observed that PPL in fine-tuning increases diversity and prior class preservation. As seen in the paper, our results obtained with PPL adhere to the prompt better, but sometimes at the loss of the subject’s image quality. Additionally, the strength of a subject’s prior amplified this result. For example, inference with prompts not seen in training, such as a dog painted in a Vincent Van Gogh style, yielded higher quality results than in-dataset prompts for subjects without a strong prior, like a “dog backpack”. This leads to an important result: PPL did not increase subject preservation. Lastly, even with smaller amounts of outputs per prompt and training steps, PPL maintained its benefits. Overall, our findings are consistent with the original paper.
+Now, for the successes and direct conclusions of our project. We were able to reproduce the wide variety of metrics presented in the original paper, as well as the effects that using PPL had on model performance. We observed that PPL in fine-tuning increases diversity and prior class preservation. As seen in the paper, our results obtained with PPL adhere to the prompt better, but sometimes at the loss of the subject’s image quality. Additionally, the strength of a subject’s prior amplified this result. This leads to an important result: PPL did not increase subject preservation. Lastly, PPL maintained its benefits even with smaller outputs per prompt and training steps. Overall, our findings are consistent with the original paper.
 
 ## References
 1. Ruiz, N., Li, Y., Jampani, V., Pritch, Y., Rubinstein, M., & Aberman, K. (2023). *DreamBooth: Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation*. arXiv:2208.12242. [https://arxiv.org/abs/2208.12242](https://arxiv.org/abs/2208.12242)
