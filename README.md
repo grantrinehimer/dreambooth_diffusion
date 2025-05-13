@@ -135,7 +135,7 @@ Moreover, PPL boosts sample diversity under both pipelines, as generated images 
 
 Importantly, even with only 2 outputs per prompt and 400 training steps, PPL maintained its benefits: relative reductions in PRES and gains in DIV closely match those reported by Ruiz et al. [1]. This robustness suggests that class-specific prior preservation can be deployed under constrained compute budgets without losing its ability to preserve subject identity and encourage diverse generations.
 
-<img src="r1.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
+<img src="r1.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="600" />
 
 This series of images is a comparison of the paper's results compared to our model's generated images with the same prompts. Due to limitations in computational resoures and the utilization of Huggingface's Stable Diffusion instead of Google's Imagen (like the original paper), results vary slighlty and quality, but still demonstrate consistent, high-fidelity subject preservation. 
 
