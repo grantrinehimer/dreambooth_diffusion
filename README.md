@@ -10,10 +10,7 @@ This GitHub repository contains our reimplementation of the DreamBooth architect
 ## Chosen Result
 We extend Figure 12 and Table 3 from the original paper [1] to qualitatively compare our reimplementation [Figure 1] and quantitatively assess the effect of PPL on subject fidelity and output diversity—key factors in evaluating the success of subject-driven generation. 
 
-<div style="text-align: center;">
-  <img src="fig_12.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
-  <img src="table_3.png" alt="Results Table" style="display: inline-block; margin: 0 10px;" width="500" />
-</div>
+
 ## GitHub Contents
 
 ```
@@ -127,13 +124,18 @@ We evaluated prior collapse through the PRES (preservation) metric, found by the
 
 Across all metrics, our reimplementation reproduces the original paper’s trends—with slightly lower absolute values owing to our reduced prompt set (8 vs. 25) and shorter fine-tuning (400 vs. 1000 steps). This is highlighted below [Table 1]; the same trends persist between the Dreambooth metrics [1] and ours. 
 
+<img src="fig_12.png" alt="Architecture" style="display: inline-block; margin: 0 10px;" width="300" />
+
 In both cases, adding PPL sharply reduces prior collapse (lower PRES), meaning the model no longer “hallucinates” the fine-tuned subject when generating random class samples. We interpreted this as a lack of overfitting to the original subject; PPL aids in understanding the key components of what features make up the class without recreating the original subject, which is evident when prompts contain another subject from the same class.
+
+<img src="table_3.png" alt="Results Table" style="display: inline-block; margin: 0 10px;" width="500" />
 
 Moreover, PPL boosts sample diversity under both pipelines, as generated images vary more in pose, background, and articulation. Nevertheless, our significant difference in DIV scores in PPL and no-PPL of 0.245 and 0.207 respectively, are indicative of our reduced amount of output images per prompt compared to the Dreambooth [1] output (2 vs. 4): having more output images mitigates average variance. When you only have two images, that one distance completely determines the mean; with four images, you average over six distances, which smooths out any outliers and reduces the overall DIV value.
 
+
 Importantly, even with only 2 outputs per prompt and 400 training steps, PPL maintained its benefits: relative reductions in PRES and gains in DIV closely match those reported by Ruiz et al. [1]. This robustness suggests that class-specific prior preservation can be deployed under constrained compute budgets without losing its ability to preserve subject identity and encourage diverse generations.
 
-![image title](image_name.png)
+
 
 ## Conclusion
 
